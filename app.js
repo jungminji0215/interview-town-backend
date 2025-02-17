@@ -2,6 +2,9 @@ import express from "express";
 import cors from "cors";
 import helmet from "helmet";
 import morgan from "morgan";
+import categoriesRouter from "./router/categories.js";
+import tagsRouter from "./router/tags.js";
+import questionsRouter from "./router/questions.js";
 
 const app = express();
 app.use(express.json());
@@ -9,7 +12,9 @@ app.use(helmet());
 app.use(cors());
 app.use(morgan("tiny"));
 
-app.use("/categories", categoriesRoute);
+app.use("/categories", categoriesRouter);
+app.use("/tags", tagsRouter);
+app.use("/questions", questionsRouter);
 
 app.use((req, res, next) => {
   res.sendStatus(404);
