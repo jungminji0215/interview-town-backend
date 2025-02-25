@@ -1,12 +1,5 @@
 import express from "express";
-
-const tags = {
-  tags: [
-    { id: 101, name: "javascript" },
-    { id: 102, name: "react" },
-    { id: 103, name: "css" },
-  ],
-};
+import { getTagsByCategory } from "../data/tags.js";
 
 const router = express.Router();
 
@@ -16,8 +9,8 @@ const router = express.Router();
  */
 router.get("/", (req, res, next) => {
   const category = req.query.category;
-
-  res.status(200).json(tags);
+  const data = getTagsByCategory(category);
+  res.status(200).json(data);
 });
 
 export default router;

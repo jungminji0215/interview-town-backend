@@ -5,6 +5,7 @@ import morgan from "morgan";
 import categoriesRouter from "./router/categories.js";
 import tagsRouter from "./router/tags.js";
 import questionsRouter from "./router/questions.js";
+import answersRouter from "./router/answers.js";
 
 const app = express();
 app.use(express.json());
@@ -15,6 +16,7 @@ app.use(morgan("tiny"));
 app.use("/categories", categoriesRouter);
 app.use("/tags", tagsRouter);
 app.use("/questions", questionsRouter);
+app.use("/answers", answersRouter);
 
 app.use((req, res, next) => {
   res.sendStatus(404);
