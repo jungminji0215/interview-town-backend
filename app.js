@@ -6,6 +6,7 @@ import categoriesRouter from "./router/categories.js";
 import tagsRouter from "./router/tags.js";
 import questionsRouter from "./router/questions.js";
 import answersRouter from "./router/answers.js";
+import { db } from "./db/database.js";
 
 const app = express();
 app.use(express.json());
@@ -26,5 +27,7 @@ app.use((error, req, res, next) => {
   console.error(error);
   res.sendStatus(500);
 });
+
+db.getConnection().then((connection) => console.log(connection));
 
 app.listen(8080);
