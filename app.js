@@ -3,7 +3,7 @@ import cors from "cors";
 import helmet from "helmet";
 import morgan from "morgan";
 import categoriesRouter from "./router/categoriesRouter.js";
-import tagsRouter from "./router/tags.js";
+import tagsRouter from "./router/tagsRouter.js";
 import questionsRouter from "./router/questions.js";
 import answersRouter from "./router/answers.js";
 import { db } from "./db/database.js";
