@@ -2,7 +2,7 @@ import express from "express";
 import cors from "cors";
 import helmet from "helmet";
 import morgan from "morgan";
-import categoriesRouter from "./router/categories.js";
+import categoriesRouter from "./router/categoriesRouter.js";
 import tagsRouter from "./router/tags.js";
 import questionsRouter from "./router/questions.js";
 import answersRouter from "./router/answers.js";
@@ -28,6 +28,6 @@ app.use((error, req, res, next) => {
   res.sendStatus(500);
 });
 
-db.getConnection().then((connection) => console.log(connection));
+db.getConnection().then((connection) => console.log("DB 연결 성공"));
 
 app.listen(8080);

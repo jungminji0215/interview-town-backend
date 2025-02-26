@@ -9,7 +9,6 @@ const router = express.Router();
  */
 router.get("/:answerId", (req, res, next) => {
   const { answerId } = req.params;
-  console.log("answerId :>> ", answerId);
 
   const data = getAnswersByQuestionId(answerId);
   res.status(200).json(data);
