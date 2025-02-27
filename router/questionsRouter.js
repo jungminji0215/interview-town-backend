@@ -2,7 +2,8 @@ import express from "express";
 import {
   getQuestionByCategoryId,
   getQuestionsByCategory,
-} from "../data/questions.js";
+} from "../data/questionRepository.js";
+import * as questionsController from "../controller/questionsController.js";
 
 const router = express.Router();
 
@@ -10,11 +11,7 @@ const router = express.Router();
  * GET /questions?category=frontend
  * 특정 카테고리에 속한 질문 목록 조회
  */
-router.get("/", (req, res, next) => {
-  const category = req.query.category;
-  const data = getQuestionsByCategory(category);
-  res.status(200).json(data);
-});
+router.get("/", questionsController.getQuestionsByCategory);
 
 /**
  * GET /questions/{questionId}

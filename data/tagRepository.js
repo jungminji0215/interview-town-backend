@@ -1,6 +1,6 @@
 import { db } from "../db/database.js";
 
-// TODO 이렇게 해야만 하는가..
+// TODO 이렇게 해야만 하는가.. join 으로 변경
 const categoryMapping = {
   frontend: 1,
   backend: 2,
