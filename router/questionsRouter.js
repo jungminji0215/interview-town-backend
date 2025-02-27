@@ -1,8 +1,5 @@
 import express from "express";
-import {
-  getQuestionByCategoryId,
-  getQuestionsByCategory,
-} from "../data/questionRepository.js";
+
 import * as questionsController from "../controller/questionsController.js";
 
 const router = express.Router();
@@ -17,11 +14,6 @@ router.get("/", questionsController.getQuestionsByCategory);
  * GET /questions/{questionId}
  * 질문 상세를 조회한다
  */
-router.get("/:questionId", (req, res, next) => {
-  const { questionId } = req.params;
-
-  const data = getQuestionByCategoryId(questionId);
-  res.status(200).json(data);
-});
+router.get("/:questionId", questionsController.getQuestionById);
 
 export default router;

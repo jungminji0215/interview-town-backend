@@ -7,15 +7,19 @@ const questionDetail = {
       title: "React의 상태 관리 방법에는 어떤 것들이 있나요?",
       content:
         "React에서 상태 관리를 위해 사용하는 라이브러리와 그 이유에 대해 구체적으로 설명해주세요.",
-      tags: [
-        { id: 102, name: "react" },
-        { id: 104, name: "상태관리" },
-      ],
+      tag: { id: 104, name: "상태관리" },
       category: { id: 1, name: "프론트엔드" },
     },
   },
 };
 
+/**
+ * 질문 목록
+ * @param {string} category
+ * @param {number} page
+ * @param {number} pageSize
+ * @returns
+ */
 export async function getQuestionsByCategory(
   category,
   page = 1,
@@ -64,6 +68,21 @@ export async function getQuestionsByCategory(
   };
 }
 
-export function getQuestionByCategoryId(categoryId) {
-  return questionDetail;
+export async function getQuestionById(questionId) {
+  const [result] = await db.execute(
+    `
+    SELECT 
+      q.id,
+      q.title,
+      JSON_OBJECT('id', t.id, 'name', t.name) AS tag,
+      JSON_OBJECT('id', c.id, 'name', c.name) AS category
+    FROM questions AS q
+    INNER JOIN categories AS c ON q.category_id = c.id
+    INNER JOIN tags AS t ON q.tag_id = t.id
+    WHERE q.id = ?;
+    `,
+    [questionId]
+  );
+
+  return { data: { question: result[0] } };
 }

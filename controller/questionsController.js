@@ -16,3 +16,10 @@ export const getQuestionsByCategory = async (req, res, next) => {
 
   res.status(200).json(data);
 };
+
+export const getQuestionById = async (req, res, next) => {
+  const { questionId } = req.params;
+
+  const data = await questionRepository.getQuestionById(questionId);
+  res.status(200).json(data);
+};
