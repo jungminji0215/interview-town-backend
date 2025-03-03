@@ -1,18 +1,5 @@
 import { db } from "../db/database.js";
 
-const questionDetail = {
-  data: {
-    question: {
-      id: 1001,
-      title: "React의 상태 관리 방법에는 어떤 것들이 있나요?",
-      content:
-        "React에서 상태 관리를 위해 사용하는 라이브러리와 그 이유에 대해 구체적으로 설명해주세요.",
-      tag: { id: 104, name: "상태관리" },
-      category: { id: 1, name: "프론트엔드" },
-    },
-  },
-};
-
 /**
  * 질문 목록
  * @param {string} category

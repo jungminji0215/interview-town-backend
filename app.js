@@ -5,7 +5,7 @@ import morgan from "morgan";
 import categoriesRouter from "./router/categoriesRouter.js";
 import tagsRouter from "./router/tagsRouter.js";
 import questionsRouter from "./router/questionsRouter.js";
-import answersRouter from "./router/answers.js";
+import answersRouter from "./router/answersRouter.js";
 import { db } from "./db/database.js";
 
 const app = express();
