@@ -82,7 +82,14 @@ export async function getAnswersByQuestionId(questionId) {
     questionId,
   ]);
 
-  console.log("result[0] :>> ", result[0]);
-
   return { data: { answers: result[0] } };
+}
+
+export async function addAnswer(questionId, content) {
+  const result = await db.execute(
+    "INSERT INTO answers (question_id, content) VALUES(?,?)",
+    [questionId, content]
+  );
+
+  // return { data: { answers: result[0] } };
 }
