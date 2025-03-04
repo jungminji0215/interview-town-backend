@@ -20,5 +20,6 @@ export async function addAnswer(questionId, content) {
   const [rows] = await db.execute("SELECT * FROM answers WHERE id = ?", [
     insertedId,
   ]);
+
   return { data: { answer: rows[0] } };
 }

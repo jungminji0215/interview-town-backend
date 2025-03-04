@@ -35,13 +35,17 @@ const server = app.listen(8080, () => {
   console.log("서버가 8080번 포트에서 실행 중입니다.");
 });
 
-const socketIO = new Server(server, {
+const io = new Server(server, {
   cors: { origin: "*" }, // 임시로 모든 도메인 허용
 });
 
-app.locals.io = socketIO;
+app.locals.io = io;
 
-socketIO.on("connection", (socket) => {
+io.on("connection", (socket) => {
   console.log("클라이언트 연결:", socket.id);
-  socketIO.emit("answer", "답변입니다~~!!");
+
+  socket.on("joinRoom", (questionId) => {
+    console.log(`Socket ${socket.id} joining room for question ${questionId}`);
+    socket.join(`question_${questionId}`);
+  });
 });

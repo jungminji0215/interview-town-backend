@@ -8,20 +8,15 @@ export const getAnswersByQuestionId = async (req, res, next) => {
 };
 
 export const addAnswer = async (req, res, next) => {
-  console.log("실시간 답변 테스트");
-
   try {
     const { questionId, content } = req.body;
-    // DB에 새 답변 추가
-    const data = await answerRepository.addAnswer(questionId, content);
 
-    console.log("실시간 답변 테스트 data :>> ", data);
+    const { data } = await answerRepository.addAnswer(questionId, content);
+    const { answer } = data;
 
-    // 답변 등록 후, socket.io를 통해 모든 클라이언트에 새 답변 방송
-    // app.locals.io는 메인 서버 파일에서 설정한 socket.io 인스턴스
-    req.app.locals.io.emit("newAnswer", data.data.answer);
-
-    res.status(200).json(data);
+    // 새 답변을 받으면, req.app.locals.io 에 접근하여 특정 질문의 룸(question_1) 으로
+    // "newAnswer" 이벤트를 emit 한다.
+    req.app.locals.io.to(`question_${questionId}`).emit("newAnswer", answer);
   } catch (error) {
     next(error);
   }
