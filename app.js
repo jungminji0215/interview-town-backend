@@ -6,6 +6,7 @@ import categoriesRouter from "./router/categoriesRouter.js";
 import tagsRouter from "./router/tagsRouter.js";
 import questionsRouter from "./router/questionsRouter.js";
 import answersRouter from "./router/answersRouter.js";
+import authRouter from "./router/authRouter.js";
 import { db } from "./db/database.js";
 import { Server } from "socket.io";
 
@@ -19,6 +20,7 @@ app.use("/categories", categoriesRouter);
 app.use("/tags", tagsRouter);
 app.use("/questions", questionsRouter);
 app.use("/answers", answersRouter);
+app.use("/auth", authRouter);
 
 app.use((req, res, next) => {
   res.sendStatus(404);
