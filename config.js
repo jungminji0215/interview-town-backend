@@ -19,4 +19,7 @@ export const config = {
     database: required("DB_DATABASE"),
     password: required("DB_PASSWORD"),
   },
+  env: {
+    nodeEnv: required("NODE_ENV"),
+  },
 };
