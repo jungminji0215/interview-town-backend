@@ -18,9 +18,8 @@ const encrypt = async (payload) => {
 };
 
 // TODO 중복제거
-// jose를 이용해 access token 생성 (payload: { id })
-const createAccessToken = async (userId) => {
-  return await new SignJWT({ userId: userId })
+const createAccessToken = async ({ id, user_id, nickname }) => {
+  return await new SignJWT({ user: { id, userId: user_id, nickname } })
     .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
     .setExpirationTime(jwtExpiresInAccess)
@@ -28,8 +27,8 @@ const createAccessToken = async (userId) => {
 };
 
 // jose를 이용해 refresh token 생성 (payload: { id })
-const createRefreshToken = async (userId) => {
-  return await new SignJWT({ userId: userId })
+const createRefreshToken = async ({ id, user_id, nickname }) => {
+  return await new SignJWT({ user: { id, userId: user_id, nickname } })
     .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
     .setExpirationTime(jwtExpiresInRefresh)
@@ -41,7 +40,40 @@ const decrypt = async (session) => {
     const { payload } = await jwtVerify(session, encodedKey, {
       algorithms: ["HS256"],
     });
+    return payload;
   } catch (error) {}
+};
+
+// 미들웨어: access token 검증 (요청 헤더의 Bearer 토큰)
+export async function verifyToken(req, res, next) {
+  const authHeader = req.headers.authorization;
+  if (!authHeader)
+    return res.status(401).json({ message: "No token provided" });
+  const token = authHeader.split(" ")[1];
+  try {
+    const { payload } = await jwtVerify(token, encodedKey, {
+      algorithms: ["HS256"],
+    });
+
+    req.user = { userId: payload.userId };
+    next();
+  } catch (error) {
+    res.status(401).json({ message: "Invalid token" });
+  }
+}
+
+// TODO 만료되면 토큰 다시 생성
+export const getSession = async (req, res, next) => {
+  const authHeader = req.headers["authorization"];
+  if (!authHeader) return null;
+
+  const token = authHeader.startsWith("Bearer ")
+    ? authHeader.split(" ")[1]
+    : authHeader;
+
+  const decryptToken = await decrypt(token);
+
+  res.status(200).json({ data: decryptToken });
 };
 
 // 회원가입: 사용자를 생성하고, access token은 JSON 응답, refresh token은 httpOnly 쿠키로 설정
@@ -95,17 +127,15 @@ export const login = async (req, res, next) => {
   // 여기서 토큰 만들어서 주기
   // refreshToken : HTTP Only Cookies 에 담아서 전달
   // accessToken : json payload 에 담아서 전달
-  const accessToken = await createAccessToken(foundUser.id);
-  const refreshToken = await createRefreshToken(foundUser.id);
+  const accessToken = await createAccessToken(foundUser);
+  const refreshToken = await createRefreshToken(foundUser);
 
   res.cookie("refreshToken", refreshToken, {
     httpOnly: true,
     secure: config.env.nodeEnv === "prod",
-    sameSite: "lax",
+    sameSite: process.env.NODE_ENV === "prod" ? "none" : "lax",
     maxAge: 7 * 24 * 60 * 60 * 1000,
   });
-
-  // console.log("login res :>> ", res);
 
   res
     .status(200)
