@@ -35,7 +35,7 @@ const createRefreshToken = async ({ id, user_id, nickname }) => {
     .sign(encodedKey);
 };
 
-const decrypt = async (session) => {
+export const decrypt = async (session) => {
   try {
     const { payload } = await jwtVerify(session, encodedKey, {
       algorithms: ["HS256"],
@@ -67,6 +67,7 @@ export const getSession = async (req, res, next) => {
   const authHeader = req.headers["authorization"];
   if (!authHeader) return null;
 
+  // TODO 리팩토링
   const token = authHeader.startsWith("Bearer ")
     ? authHeader.split(" ")[1]
     : authHeader;

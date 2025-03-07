@@ -8,10 +8,10 @@ export async function getAnswersByQuestionId(questionId) {
   return { data: { answers: result[0] } };
 }
 
-export async function addAnswer(questionId, content) {
+export async function addAnswer(questionId, id, content) {
   const [result] = await db.execute(
-    "INSERT INTO answers (question_id, content) VALUES(?,?)",
-    [questionId, content]
+    "INSERT INTO answers (question_id, user_id, content) VALUES(?,?,?)",
+    [questionId, id, content]
   );
 
   const insertedId = result.insertId;
