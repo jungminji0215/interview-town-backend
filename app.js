@@ -38,8 +38,8 @@ app.use((error, req, res, next) => {
 
 db.getConnection().then((connection) => console.log("DB 연결 성공"));
 
-const server = app.listen(8080, () => {
-  console.log("서버가 8080번 포트에서 실행 중입니다.");
+const server = app.listen(80, () => {
+  console.log("서버가 80번 포트에서 실행 중입니다.");
 });
 
 const io = new Server(server, {
