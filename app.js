@@ -17,8 +17,12 @@ app.use(cors());
 app.use(morgan("tiny"));
 
 /** 서버 구동 테스트 */
+app.use("/healthy", (req, res) => {
+  res.status(200).send("success healthy");
+});
+
 app.use("/", (req, res) => {
-  res.send(`.env 테스트 : ${process.env.DB_USER}`);
+  res.send(`.env 테스트!!! : ${process.env.DB_USER}`);
 });
 
 app.use("/categories", categoriesRouter);
