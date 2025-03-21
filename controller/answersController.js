@@ -11,17 +11,17 @@ export const getAnswersByQuestionId = async (req, res, next) => {
 export const addAnswer = async (req, res, next) => {
   try {
     const { questionId, content } = req.body;
-    const authHeader = req.headers["authorization"];
+    // const authHeader = req.headers["authorization"];
 
-    const token = authHeader.startsWith("Bearer ")
-      ? authHeader.split(" ")[1]
-      : authHeader;
+    // const token = authHeader.startsWith("Bearer ")
+    //   ? authHeader.split(" ")[1]
+    //   : authHeader;
 
-    const { user } = await decrypt(token);
+    // const { user } = await decrypt(token);
 
     const { data } = await answerRepository.addAnswer(
       questionId,
-      user.id,
+      // user.id,
       content
     );
     const { answer } = data;

@@ -8,10 +8,11 @@ export async function getAnswersByQuestionId(questionId) {
   return { data: { answers: result[0] } };
 }
 
-export async function addAnswer(questionId, id, content) {
+export async function addAnswer(questionId, content) {
+  // TODO id 임시
   const [result] = await db.execute(
     "INSERT INTO answers (question_id, user_id, content) VALUES(?,?,?)",
-    [questionId, id, content]
+    [questionId, 1, content]
   );
 
   const insertedId = result.insertId;
