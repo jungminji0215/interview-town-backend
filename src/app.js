@@ -4,6 +4,7 @@ import helmet from "helmet";
 import morgan from "morgan";
 import categoryRoutes from './routes/category.route.js';
 import questionRoutes from './routes/question.route.js';
+import healthRouter from './routes/health.route.js';
 
 import swaggerUi from 'swagger-ui-express';
 import swaggerSpec from './docs/swagger.js';
@@ -35,6 +36,8 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 // });
 //
 //
+app.use(healthRouter);
+
 app.use("/api", categoryRoutes);
 app.use('/api', questionRoutes);
 // app.use("/tags", tagsRouter);
