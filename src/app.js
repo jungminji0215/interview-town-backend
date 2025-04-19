@@ -3,7 +3,7 @@ import cors from "cors";
 import helmet from "helmet";
 import morgan from "morgan";
 import categoryRoutes from './routes/category.route.js';
-
+import questionRoutes from './routes/question.route.js';
 
 import swaggerUi from 'swagger-ui-express';
 import swaggerSpec from './docs/swagger.js';
@@ -19,6 +19,7 @@ import { db } from "./db/database.js";
 import { Server } from "socket.io";
 
 const app = express();
+app.use(morgan('dev'));
 const PORT = process.env.PORT || (process.env.NODE_ENV === 'production' ? 80 : 3001);
 
 app.use(express.json());
@@ -35,6 +36,7 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 //
 //
 app.use("/api", categoryRoutes);
+app.use('/api', questionRoutes);
 // app.use("/tags", tagsRouter);
 // app.use("/questions", questionsRouter);
 // app.use("/answers", answersRouter);
