@@ -1,5 +1,5 @@
 import express from "express";
-import * as authController from "../controller/authController.js";
+import * as authController from "../controllers/authController.js";
 import { body } from "express-validator";
 
 const router = express.Router();
@@ -25,6 +25,6 @@ const validateSignup = [
 router.post("/signup", validateSignup, authController.signup);
 router.post("/login", validateCredential, authController.login);
 router.get("/session", authController.getSession);
-// router.get("/session", verifyToken, getSession);
+// routes.get("/session", verifyToken, getSession);
 
 export default router;
