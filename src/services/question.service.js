@@ -13,7 +13,6 @@ export const getAllQuestions = async (categoryName, page, pageSize) => {
       orderBy: { createdAt: 'desc' },
       include: {
         category: true,
-        answers: true,
       },
     }),
     prisma.question.count({ where }),

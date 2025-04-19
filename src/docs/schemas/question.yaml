@@ -60,15 +60,6 @@ paths:
                                 name:
                                   type: string
                                   example: "frontend"
-                            answers:
-                              type: array
-                              items:
-                                type: object
-                                properties:
-                                  id:
-                                    type: integer
-                                  content:
-                                    type: string
                       totalCount:
                         type: integer
                         example: 100
