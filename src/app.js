@@ -46,17 +46,17 @@ const server = app.listen(80, () => {
   console.log("서버가 80번 포트에서 실행 중입니다.");
 });
 
-const io = new Server(server, {
-  cors: { origin: "*" }, // 임시로 모든 도메인 허용
-});
+// const io = new Server(server, {
+//   cors: { origin: "*" }, // 임시로 모든 도메인 허용
+// });
 
-app.locals.io = io;
+// app.locals.io = io;
 
-io.on("connection", (socket) => {
-  console.log("클라이언트 연결:", socket.id);
+// io.on("connection", (socket) => {
+//   console.log("클라이언트 연결:", socket.id);
 
-  socket.on("joinRoom", (questionId) => {
-    console.log(`Socket ${socket.id} joining room for question ${questionId}`);
-    socket.join(`question_${questionId}`);
-  });
-});
+//   socket.on("joinRoom", (questionId) => {
+//     console.log(`Socket ${socket.id} joining room for question ${questionId}`);
+//     socket.join(`question_${questionId}`);
+//   });
+// });

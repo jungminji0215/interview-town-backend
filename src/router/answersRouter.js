@@ -5,7 +5,7 @@ const router = express.Router();
 
 /**
  * GET /{questionId}
- * 답변 상세를 조회한다
+ * 답변 상세 조회
  */
 router.get("/", answersController.getAnswersByQuestionId);
 
