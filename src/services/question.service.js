@@ -10,7 +10,7 @@ export const getAllQuestions = async (categoryName, page, pageSize) => {
       where,
       skip: (page - 1) * pageSize,
       take: pageSize,
-      orderBy: { createdAt: 'desc' },
+      orderBy: { id: 'desc' },
       include: {
         category: true,
       },
