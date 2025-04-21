@@ -25,3 +25,15 @@ export const getAllQuestions = async (categoryName, page, pageSize) => {
     totalPages: Math.ceil(totalCount / pageSize),
   };
 };
+
+
+export const getQuestionById = async (id) => {
+  const question = await prisma.question.findUnique({
+    where: { id: Number(id) },
+    include: {
+      category: true,
+    },
+  });
+
+  return question;
+};

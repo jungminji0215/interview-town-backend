@@ -71,3 +71,41 @@ paths:
                         example: 10
         500:
           description: 서버 에러
+  /api/questions/{id}:
+    get:
+      summary: 질문 상세 조회
+      description: 질문 ID로 질문 상세 정보를 조회합니다.
+      tags:
+        - Questions
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: 질문 조회 성공
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      title:
+                        type: string
+                      content:
+                        type: string
+                      category:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                          name:
+                            type: string
+        404:
+          description: 질문을 찾을 수 없습니다
