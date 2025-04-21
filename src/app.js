@@ -2,6 +2,7 @@ import express from "express";
 import morgan from "morgan";
 import categoryRoutes from './routes/category.route.js';
 import questionRoutes from './routes/question.route.js';
+import answerRoutes from './routes/answer.route.js';
 import healthRouter from './routes/health.route.js';
 
 import swaggerUi from 'swagger-ui-express';
@@ -17,6 +18,7 @@ app.use(healthRouter);
 
 app.use("/api", categoryRoutes);
 app.use('/api', questionRoutes);
+app.use('/api', answerRoutes);
 
 
 
