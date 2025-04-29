@@ -9,7 +9,7 @@ import swaggerUi from 'swagger-ui-express';
 import swaggerSpec from './docs/swagger.js';
 
 const app = express();
-const PORT = process.env.PORT || (process.env.NODE_ENV === 'production' ? 80 : 3001);
+const PORT = process.env.PORT || (process.env.NODE_ENV === 'prod' ? 80 : 3001);
 
 app.use(morgan('dev'));
 app.use(cors({
