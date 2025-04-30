@@ -27,6 +27,10 @@ app.use('/api', answerRoutes);
 
 
 
+app.get("/", (req, res) => {
+  res.send(`서버 실행 중 (환경: ${process.env.NODE_ENV}) 포트: ${PORT}`)
+})
+
  app.listen(PORT, () => {
    console.log(`서버 실행 중 (환경: ${process.env.NODE_ENV}) 포트: ${PORT}`);
 });
