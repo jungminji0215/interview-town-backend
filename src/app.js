@@ -3,7 +3,7 @@ import morgan from "morgan";
 import categoryRoutes from './routes/category.route.js';
 import questionRoutes from './routes/question.route.js';
 import answerRoutes from './routes/answer.route.js';
-import healthRouter from './routes/health.route.js';
+import healthRoute from './routes/health.route.js';
 import cors from 'cors';
 import swaggerUi from 'swagger-ui-express';
 import swaggerSpec from './docs/swagger.js';
@@ -19,7 +19,7 @@ app.use(cors({
 
 app.use(express.json());
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
-app.use(healthRouter);
+app.use(healthRoute); // TODO 이름 변경
 
 app.use("/api", categoryRoutes);
 app.use('/api', questionRoutes);
@@ -28,6 +28,6 @@ app.use('/api', answerRoutes);
 
 
  app.listen(PORT, () => {
-   console.log(`✅ 서버 실행 중 (환경: ${process.env.NODE_ENV}) 포트: ${PORT}`);
+   console.log(`서버 실행 중 (환경: ${process.env.NODE_ENV}) 포트: ${PORT}`);
 });
 
