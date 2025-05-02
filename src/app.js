@@ -19,7 +19,7 @@ app.use(cors({
 
 app.use(express.json());
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
-app.use(healthRoute); // TODO 이름 변경
+app.use(healthRoute);
 
 app.use("/api", categoryRoutes);
 app.use('/api', questionRoutes);

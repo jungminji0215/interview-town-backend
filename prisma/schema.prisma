@@ -47,7 +47,7 @@ model User {
 
 model Answer {
   id         Int      @id @default(autoincrement())
-  content    String
+  content    String   @db.Text
   question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
   questionId Int
   user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
