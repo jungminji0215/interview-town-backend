@@ -47,7 +47,7 @@ export const signin = async (req, res) => {
     if (!user) {
       return res
         .status(401) // 401 Unauthorized
-        .json({ message: "이메일 또는 비밀번호가 잘못되었습니다." });
+        .json({ message: "invalid_credentials" });
     }
 
     const isMatch = await comparePassword(password, user.password);
@@ -55,7 +55,7 @@ export const signin = async (req, res) => {
     if (!isMatch) {
       return res
         .status(401)
-        .json({ message: "이메일 또는 비밀번호가 잘못되었습니다." });
+        .json({ message: "invalid_credentials" }); // "이메일 또는 비밀번호가 잘못되었습니다.
     }
 
     const accessToken = generateAccessToken({ userId: user.id });
@@ -74,9 +74,10 @@ export const signin = async (req, res) => {
     });
   } catch (err) {
     console.error("로그인 오류:", err);
-    res.status(500).json({ message: "서버 오류가 발생했습니다." });
+    res.status(500).json({ message: "server_error" });
   }
 };
+
 
 export const refreshToken = async (req, res) => {
   const token = req.cookies.refreshToken;

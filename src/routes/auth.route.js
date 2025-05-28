@@ -25,8 +25,8 @@ const validateAuth =   [
   ]
 
 router.post("/signup", validateAuth, signup);
-
 router.post("/signin", signin);
+
 router.post("/signout", authenticate, signout);
 
 router.get("/refreshToken", refreshToken);
