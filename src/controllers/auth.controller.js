@@ -131,3 +131,46 @@ export const signout = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
+
+export const getSession = async (req, res) => {
+  const token = req.cookies.refreshToken; // cookie-parser 필요함
+
+  if (!token) return res.json({ isLoggedIn: false });
+
+  try {
+    // 1. refreshToken 검증
+    const { userId } = verifyRefreshToken(token);
+
+    // 2. 새로운 accessToken 발급
+    const accessToken = generateAccessToken({ userId });
+
+
+    // 3. 사용자 정보 조회 (id, email, nickname)
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { id: true, email: true, nickname: true },
+    });
+
+
+    if (!user) {
+      // 혹시 user가 없는 경우 (비정상)
+      return res.status(200).json({ isLoggedIn: false });
+    }
+
+    return res.status(200).json({
+      isLoggedIn: true,
+      accessToken,
+      user,
+    });
+  } catch (error) {
+    console.error("getSession 오류:", error);
+    return res.status(401).json({ isLoggedIn: false });
+  }
+};
+
+/**
+ * catch (error) {
+ *     console.error("getSession 오류:", error);
+ *     res.status(500).json({ message: err.message });
+ *   }
+ */

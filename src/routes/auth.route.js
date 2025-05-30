@@ -4,7 +4,7 @@ import {
   signup,
   refreshToken,
   getMe,
-  signout,
+  signout, getSession,
 } from "../controllers/auth.controller.js";
 import { authenticate } from "../middlewares/auth.middleware.js";
 import {body} from "express-validator";
@@ -26,10 +26,10 @@ const validateAuth =   [
 
 router.post("/signup", validateAuth, signup);
 router.post("/signin", signin);
-
 router.post("/signout", authenticate, signout);
 
 router.get("/refreshToken", refreshToken);
+router.get("/session", getSession);
 router.get("/me", authenticate, getMe);
 
 export default router;
