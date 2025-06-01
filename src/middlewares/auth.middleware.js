@@ -22,11 +22,13 @@ import { verifyAccessToken } from "../libs/jwt.js";
 
 export const authenticate = (req, res, next) => {
   const authHeader = req.headers.authorization;
+
   if (!authHeader?.startsWith('Bearer ')) {
-    return res.status(401).json({ message: 'AccessToken이 제공되지 않았습니다.' });
+    return res.status(401).json({ message: 'accessToken 이 제공되지 않았습니다.' });
   }
   try {
     const { userId } = verifyAccessToken(authHeader.split(' ')[1]);
+    console.log("authenticate userId : ", userId)
     req.userId = userId;
     next();
   } catch {
