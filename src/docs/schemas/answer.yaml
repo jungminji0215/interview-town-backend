@@ -86,35 +86,162 @@ paths:
         '500':
           description: 서버 오류
 
+  /api/me/answers:
+    get:
+      summary: 로그인 사용자가 답변한 모든 질문별 및 답변 조회 (답변은 최신 답변 1개)
+      tags:
+        - Answers
+      description: |
+        - **authenticate** 미들웨어 사용 (로그인 필수)  
+        - 로그인된 사용자가 답변을 남긴 “모든 질문(question)”을 확인하고,  
+          각 질문별로 해당 사용자가 남긴 답변 중 가장 최근(최신) 한 건만 반환
+      security:
+        - bearerAuth: [ ]
+      responses:
+        '200':
+          description: 질문별 최신 답변 목록 (없으면 빈 배열)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      answers:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/MyQuestionLatestAnswer'
+                        description: |
+                          • 사용자가 답변한 모든 질문(question)에 대해,  
+                          해당 질문별로 사용자가 남긴 답변 중 최신 한 건만 반환
+                      totalCount:
+                        type: integer
+                        description: 반환된 `answers` 배열의 길이
+        '401':
+          description: 유효한 AccessToken이 제공되지 않음
+        '500':
+          description: 서버 오류
+
 components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
   schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: 사용자 고유 ID
+        email:
+          type: string
+          format: email
+          description: 사용자 이메일
+        nickname:
+          type: string
+          description: 사용자 닉네임
+      required:
+        - id
+        - email
+
     Answer:
       type: object
       properties:
         id:
           type: integer
           description: 답변 고유 ID
+        questionId:
+          type: integer
+          description: 답변이 달린 질문의 ID
+        userId:
+          type: integer
+          description: 작성자(사용자) ID
         content:
           type: string
           description: 답변 내용
-        questionId:
-          type: integer
-          description: 속한 질문 ID
-        userId:
-          type: integer
-          description: 작성자 유저 ID
         createdAt:
           type: string
           format: date-time
-          description: 생성 시각
-        updatedAt:
-          type: string
-          format: date-time
-          description: 수정 시각
+          description: 답변 작성 시간 (ISO 8601)
       required:
         - id
-        - content
         - questionId
         - userId
+        - content
         - createdAt
-        - updatedAt
+
+    AnswerWithUser:
+      allOf:
+        - $ref: '#/components/schemas/Answer'
+        - type: object
+          properties:
+            user:
+              $ref: '#/components/schemas/User'
+          required:
+            - user
+
+    AnswerWithUserIsMine:
+      allOf:
+        - $ref: '#/components/schemas/AnswerWithUser'
+        - type: object
+          properties:
+            isMine:
+              type: boolean
+              description: 로그인된 사용자가 해당 답변을 작성했으면 true
+          required:
+            - isMine
+
+    Pagination:
+      type: object
+      properties:
+        currentPage:
+          type: integer
+          description: 현재 페이지 번호
+        totalPages:
+          type: integer
+          description: 전체 페이지 수
+        totalCount:
+          type: integer
+          description: 전체 답변 수
+      required:
+        - currentPage
+        - totalPages
+        - totalCount
+
+    MyQuestionLatestAnswer:
+      type: object
+      properties:
+        questionId:
+          type: integer
+          description: 사용자가 답변을 남긴 질문의 ID
+        questionTitle:
+          type: string
+          description: 질문 제목
+        categoryId:
+          type: integer
+          description: 질문이 속한 카테고리 ID
+        categoryName:
+          type: string
+          description: 질문이 속한 카테고리 이름
+        answerId:
+          type: integer
+          description: 최신 답변의 ID
+        content:
+          type: string
+          description: 최신 답변 내용
+        answeredAt:
+          type: string
+          format: date-time
+          description: 최신 답변 작성 시각 (ISO 8601)
+      required:
+        - questionId
+        - questionTitle
+        - categoryId
+        - categoryName
+        - answerId
+        - content
+        - answeredAt

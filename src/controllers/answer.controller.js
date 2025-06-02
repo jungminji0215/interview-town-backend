@@ -1,4 +1,8 @@
-import {createAnswerService, getAnswersByQuestion} from "../services/answer.service.js";
+import {
+  createAnswerService,
+  fetchMyQuestionsWithLatestAnswer,
+  getAnswersByQuestion
+} from "../services/answer.service.js";
 
 export const getAnswers = async (req, res) => {
   const questionId = parseInt(req.params.id, 10);
@@ -36,7 +40,6 @@ export const getAnswers = async (req, res) => {
   }
 };
 
-
 export const createAnswer = async (req, res) => {
   const questionId = parseInt(req.params.id, 10);
   const userId = req.userId;
@@ -58,5 +61,32 @@ export const createAnswer = async (req, res) => {
     return res
       .status(500)
       .json({ message: '답변 등록 중 서버 오류가 발생했습니다.' });
+  }
+};
+
+
+/**
+ * [GET] /me/answers
+ * • authenticate를 통해 req.userId가 반드시 존재
+ *   “내가 답변한 모든 질문 + 각 질문별 최신 답변” 리스트 가져옴
+ * • 답변이 하나도 없는 경우, 빈 배열([]) 반환
+ */
+export const getMyAnswers = async (req, res) => {
+  const userId = req.userId;
+
+  try {
+    const list = await fetchMyQuestionsWithLatestAnswer(userId);
+
+    return res.status(200).json({
+      data: {
+        answers: list,
+        totalCount: list.length,
+      },
+    });
+  } catch (error) {
+    console.error('getMyAnswers 오류:', error);
+    return res
+      .status(500)
+      .json({ message: '내가 답변한 질문 목록을 가져오는 중 서버 오류가 발생했습니다.' });
   }
 };
