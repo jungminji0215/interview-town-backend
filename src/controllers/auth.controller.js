@@ -144,13 +144,11 @@ export const getSession = async (req, res) => {
     // 2. 새로운 accessToken 발급
     const accessToken = generateAccessToken({ userId });
 
-
     // 3. 사용자 정보 조회 (id, email, nickname)
     const user = await prisma.user.findUnique({
       where: { id: userId },
       select: { id: true, email: true, nickname: true },
     });
-
 
     if (!user) {
       // 혹시 user가 없는 경우 (비정상)

@@ -184,17 +184,6 @@ components:
           required:
             - user
 
-    AnswerWithUserIsMine:
-      allOf:
-        - $ref: '#/components/schemas/AnswerWithUser'
-        - type: object
-          properties:
-            isMine:
-              type: boolean
-              description: 로그인된 사용자가 해당 답변을 작성했으면 true
-          required:
-            - isMine
-
     Pagination:
       type: object
       properties:

@@ -1,14 +1,20 @@
 import prisma from '../../prisma/client.js';
 
 /**
- * 질문 ID(questionId)에 달린 답변 목록을 페이징하여 가져옴
+ * questionId에 속한 답변 중 userId를 제외한 나머지를 페이지네이션해서 조회
+ * meId가 null이면 로그인 안 한 것이므로, 전체 답변을 리턴
  */
-export const getAnswersByQuestion = async (questionId, page, pageSize) => {
+export const getAnswersByQuestion = async (questionId, userId,page, pageSize) => {
   const skip = (page - 1) * pageSize;
+
+  // where절: questionId 같고, meId가 있으면 userId != meId, 없으면 그냥 questionId
+  const whereClause = userId
+    ? { questionId, userId: { not: userId } }
+    : { questionId };
 
   const [answers, totalCount] = await Promise.all([
     prisma.answer.findMany({
-      where: { questionId },
+      where: whereClause,
       orderBy: { id: 'desc' },
       skip,
       take: pageSize,
@@ -21,7 +27,7 @@ export const getAnswersByQuestion = async (questionId, page, pageSize) => {
         },
       },
     }),
-    prisma.answer.count({ where: { questionId } }),
+    prisma.answer.count({ where: whereClause }),
   ]);
 
   return {
@@ -112,4 +118,20 @@ export async function fetchMyQuestionsWithLatestAnswer(userId) {
   }
 
   return result;
+}
+
+/**
+ * 로그인 사용자(userId)가 해당 질문(questionId)에 남긴 모든 답변
+ * 페이징 없이 “전부” 반환.
+ */
+export async function getMyAnswersByQuestionService(questionId, userId) {
+  return prisma.answer.findMany({
+    where: { questionId, userId },
+    orderBy: { createdAt: 'desc' },
+    include: {
+      user: {
+        select: { id: true, nickname: true },
+      },
+    },
+  });
 }
