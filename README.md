@@ -1,10 +1,1 @@
-
-## 더미 데이터
-
-```shell
-npm run seed
-```
-
-## 문서
-
-http://localhost:3001/api-docs/
+API 문서 : https://api.interview-town.com/api-docs
