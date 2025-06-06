@@ -8,6 +8,9 @@ import {
 
 const prisma = new PrismaClient();
 
+const isProd = process.env.NODE_ENV === 'production';
+
+
 const generateNickname = () => {
  return crypto.randomUUID().slice(0, 8)
 };
@@ -63,15 +66,19 @@ export const signin = async (req, res) => {
 
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production", // HTTPS 환경에서만 전송
-      sameSite: "none",                              // **반드시 none**
-      domain: ".interview-town.com",
+      secure: isProd,
+      sameSite: isProd ? 'none' : 'lax',
+      domain:   isProd ? '.interview-town.com' : undefined,
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
     return res.status(200).json({
       accessToken,
-      email: user.email,
+      user:{
+        id: user.id,
+        nickname:user.nickname,
+        email : user.email
+      }
     });
   } catch (err) {
     console.error("로그인 오류:", err);
@@ -122,9 +129,9 @@ export const signout = async (req, res) => {
   try {
     res.clearCookie("refreshToken", {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "none",
-      domain: ".interview-town.com",
+      secure: isProd,
+      sameSite: isProd ? 'none' : 'lax',
+      domain:   isProd ? '.interview-town.com' : undefined,
     });
 
     return res.status(200).json({ message: "로그아웃 성공" });
