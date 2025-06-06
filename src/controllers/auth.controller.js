@@ -64,8 +64,9 @@ export const signin = async (req, res) => {
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production", // HTTPS 환경에서만 전송
-      sameSite: "strict",
-      maxAge: 7 * 24 * 60 * 60 * 1000, // 7일
+      sameSite: "none",                              // **반드시 none**
+      domain: ".interview-town.com",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
     return res.status(200).json({
@@ -122,7 +123,8 @@ export const signout = async (req, res) => {
     res.clearCookie("refreshToken", {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
+      sameSite: "none",
+      domain: ".interview-town.com",
     });
 
     return res.status(200).json({ message: "로그아웃 성공" });
