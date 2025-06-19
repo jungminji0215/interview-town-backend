@@ -134,10 +134,10 @@ export const signout = async (req, res) => {
       domain:   isProd ? '.interview-town.com' : undefined,
     });
 
-    return res.status(200).json({ message: "로그아웃 성공" });
+    return res.status(200).json({ message: "success_signout" });
   } catch (err) {
-    console.error("로그아웃 오류:", err);
-    res.status(500).json({ message: err.message });
+    console.error("error_signout :", err);
+    res.status(500).json({ message: "server_error" });
   }
 };
 
