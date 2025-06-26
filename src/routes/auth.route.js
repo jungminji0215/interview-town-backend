@@ -30,6 +30,6 @@ router.post("/signout", authenticate, signout);
 
 router.get("/refreshToken", refreshToken);
 router.get("/session", getSession);
-router.get("/me", authenticate, getMe);
+router.get("/me", getMe);
 
 export default router;
