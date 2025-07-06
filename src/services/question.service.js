@@ -53,3 +53,26 @@ export const getQuestionById = async (id) => {
 
   return question;
 };
+
+export const updateQuestionById = async (id, updateData) => {
+  const { title, content } = updateData;
+
+  const existingQuestion = await prisma.question.findUnique({
+    where: { id: Number(id) },
+  });
+
+  if (!existingQuestion) {
+    throw new Error('질문을 찾을 수 없습니다.');
+  }
+
+  const dataToUpdate = {};
+  if (title) dataToUpdate.title = title;
+  if (content) dataToUpdate.content = content;
+
+  const updatedQuestion = await prisma.question.update({
+    where: { id: Number(id) },
+    data: dataToUpdate,
+  });
+
+  return updatedQuestion;
+};
