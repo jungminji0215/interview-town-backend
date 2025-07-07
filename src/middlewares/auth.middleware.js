@@ -28,7 +28,6 @@ export const authenticate = (req, res, next) => {
   }
   try {
     const { userId } = verifyAccessToken(authHeader.split(' ')[1]);
-    console.log("authenticate userId : ", userId)
     req.userId = userId;
     next();
   } catch {

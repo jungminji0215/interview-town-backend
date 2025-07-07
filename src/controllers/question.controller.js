@@ -1,4 +1,4 @@
-import {getAllQuestions, getQuestionById} from '../services/question.service.js';
+import {getAllQuestions, getQuestionById, updateQuestionById} from '../services/question.service.js';
 
 export const getQuestions = async (req, res) => {
   try {
@@ -29,5 +29,25 @@ export const getQuestionDetail = async (req, res) => {
   } catch (error) {
     console.error('질문 상세 조회 실패:', error);
     res.status(500).json({ message: '서버 오류가 발생했습니다.'});
+  }
+};
+
+export const updateQuestion = async (req, res) => {
+  const { id } = req.params;
+  const { title, content } = req.body;
+
+  if (!title && !content) {
+    return res.status(400).json({ message: '수정할 제목이나 내용이 필요합니다.' });
+  }
+
+  try {
+    const updatedQuestion = await updateQuestionById(id, { title, content });
+    res.status(200).json({ data: updatedQuestion, message: '질문이 성공적으로 수정되었습니다.' });
+  } catch (error) {
+    console.error('질문 수정 실패:', error);
+    if (error.message === '질문을 찾을 수 없습니다.') {
+      return res.status(404).json({ message: error.message });
+    }
+    res.status(500).json({ message: '서버 오류가 발생했습니다.' });
   }
 };

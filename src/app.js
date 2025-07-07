@@ -5,6 +5,7 @@ import questionRoutes from './routes/question.route.js';
 import answerRoutes from './routes/answer.route.js';
 import healthRoute from './routes/health.route.js';
 import authRoutes from "./routes/auth.route.js";
+import userRoutes from "./routes/user.route.js";
 
 import cors from 'cors';
 import swaggerUi from 'swagger-ui-express';
@@ -29,7 +30,7 @@ app.use("/api", categoryRoutes);
 app.use('/api', questionRoutes);
 app.use('/api', answerRoutes);
 app.use("/api", authRoutes);
-
+app.use("/api", userRoutes)
 
 
 app.get("/", (req, res) => {
