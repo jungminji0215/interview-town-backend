@@ -121,17 +121,62 @@ export async function fetchMyQuestionsWithLatestAnswer(userId) {
 }
 
 /**
- * 로그인 사용자(userId)가 해당 질문(questionId)에 남긴 모든 답변
- * 페이징 없이 “전부” 반환.
+ * 로그인 사용자(userId)가 해당 질문(questionId)에 남긴 답변
  */
-export async function getMyAnswersByQuestionService(questionId, userId) {
-  return prisma.answer.findMany({
-    where: { questionId, userId },
-    orderBy: { createdAt: 'desc' },
+export async function getMyAnswerByQuestionService(questionId, userId) {
+  // [수정] findMany 대신 findFirst를 사용하여 조건에 맞는 첫 번째 레코드 하나만 찾습니다.
+  // 해당하는 레코드가 없으면 null을 반환합니다.
+  return prisma.answer.findFirst({
+    where: {
+      questionId,
+      userId,
+    },
     include: {
       user: {
-        select: { id: true, nickname: true },
+        select: { id: true, nickname: true},
       },
     },
+    // 여러 개가 있을 리 없지만, 만약의 경우를 대비해 최신순으로 정렬
+    orderBy: {
+      createdAt: 'desc',
+    },
+  });
+}
+
+export async function updateAnswerService(answerId, userId, content) {
+  const answer = await prisma.answer.findUnique({ where: { id: answerId } });
+
+  if (!answer) {
+    throw new Error('Answer not found');
+  }
+  // 답변의 소유자인지 확인
+  if (answer.userId !== userId) {
+    throw new Error('Not authorized');
+  }
+
+  return prisma.answer.update({
+    where: { id: answerId },
+    data: { content },
+  });
+}
+
+/**
+ * 답변을 삭제합니다.
+ * @param {number} answerId - 삭제할 답변의 ID
+ * @param {number} userId - 요청한 사용자의 ID (본인 확인용)
+ */
+export async function deleteAnswerService(answerId, userId) {
+  const answer = await prisma.answer.findUnique({ where: { id: answerId } });
+
+  if (!answer) {
+    throw new Error('Answer not found');
+  }
+  // 답변의 소유자인지 확인합니다.
+  if (answer.userId !== userId) {
+    throw new Error('Not authorized');
+  }
+
+  return prisma.answer.delete({
+    where: { id: answerId },
   });
 }

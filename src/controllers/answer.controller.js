@@ -1,7 +1,7 @@
 import {
-  createAnswerService,
+  createAnswerService, deleteAnswerService,
   fetchMyQuestionsWithLatestAnswer,
-  getAnswersByQuestion, getMyAnswersByQuestionService
+  getAnswersByQuestion, getMyAnswerByQuestionService, updateAnswerService
 } from "../services/answer.service.js";
 
 /**
@@ -25,12 +25,6 @@ export const getAnswers = async (req, res) => {
       totalPages,
       totalCount,
     } = await getAnswersByQuestion(questionId, userId, page, pageSize);
-
-    // // 각 답변에 isMine 플래그 추가
-    // const enriched = answers.map(ans => ({
-    //   ...ans,
-    //   isMine: userId !== null && ans.userId === userId,
-    // }));
 
     return res.status(200).json({
       data: {
@@ -58,9 +52,7 @@ export const createAnswer = async (req, res) => {
   }
 
   try {
-
     const answer = await createAnswerService({ questionId, content, userId });
-
     return res.status(201).json(answer);
   } catch (error) {
     console.error('답변 등록 실패', error);
@@ -101,19 +93,61 @@ export const getMyAnswers = async (req, res) => {
 /**
  * [GET] /api/questions/:id/answers/me
  * authenticate 미들웨어로 req.userId 넣어줌
- * 해당 질문(questionId)에 대해 로그인된 사용자가 남긴 모든 답변 반환
+ * 해당 질문(questionId)에 대해 로그인된 사용자가 남긴 답변 반환
  */
 export const getMyAnswersByQuestion = async (req, res) => {
   const questionId = parseInt(req.params.id, 10);
-  const userId = req.userId; // authenticate로 이미 세팅됨
+  const userId = req.userId;
 
   try {
-    const myAnswers = await getMyAnswersByQuestionService(questionId, userId);
-    return res.status(200).json({ data: { answers: myAnswers } });
+    const myAnswer = await getMyAnswerByQuestionService(questionId, userId);
+    return res.status(200).json({ data: { answer: myAnswer } });
   } catch (err) {
     console.error('내 답변 조회 실패:', err);
     return res
       .status(500)
       .json({ message: '내 답변을 불러오는 중 서버 오류가 발생했습니다.' });
+  }
+};
+
+
+export const updateAnswerController = async (req, res) => {
+  try {
+    const answerId = parseInt(req.params.id, 10);
+    const userId = req.userId;
+    const { content } = req.body;
+
+    if (!content || content.trim() === '') {
+      return res.status(400).json({ message: '내용을 입력해주세요.' });
+    }
+
+    const updatedAnswer = await updateAnswerService(answerId, userId, content);
+    res.status(200).json({ data: updatedAnswer, message: '답변이 성공적으로 수정되었습니다.' });
+  } catch (err) {
+    if (err.message === 'Not authorized') {
+      return res.status(403).json({ message: '수정할 권한이 없습니다.' });
+    }
+    if (err.message === 'Answer not found') {
+      return res.status(404).json({ message: '답변을 찾을 수 없습니다.' });
+    }
+    res.status(500).json({ message: '서버 오류가 발생했습니다.' });
+  }
+};
+
+export const deleteAnswerController = async (req, res) => {
+  try {
+    const answerId = parseInt(req.params.id, 10);
+    const userId = req.userId;
+
+    await deleteAnswerService(answerId, userId);
+    res.status(200).json({ message: '답변이 성공적으로 삭제되었습니다.' });
+  } catch (err) {
+    if (err.message === 'Not authorized') {
+      return res.status(403).json({ message: '삭제할 권한이 없습니다.' });
+    }
+    if (err.message === 'Answer not found') {
+      return res.status(404).json({ message: '답변을 찾을 수 없습니다.' });
+    }
+    res.status(500).json({ message: '서버 오류가 발생했습니다.' });
   }
 };
