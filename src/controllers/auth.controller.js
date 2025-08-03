@@ -21,7 +21,8 @@ export const signup = async (req, res) => {
   try {
     const isExistUser = await prisma.user.findUnique({ where: { email } });
     if (isExistUser) {
-      return res.status(401).json({ message: "user_exist" });
+      // 409 Conflict
+      return res.status(409).json({ message: "user_exists" });
     }
 
     const hashedPassword = await hashPassword(password);
@@ -35,8 +36,8 @@ export const signup = async (req, res) => {
     });
 
     return res.status(201).json({ message: "success" });
-  } catch (err) {
-    console.error("회원가입 오류:", err);
+  } catch (error) {
+    console.error("회원가입 오류:", error);
     res.status(500).json({ message: "server_error" });
   }
 };
@@ -47,41 +48,31 @@ export const signin = async (req, res) => {
   try {
     const user = await prisma.user.findUnique({ where: { email } });
 
+    // 1. 유저 존재 여부 확인
     if (!user) {
       return res
         .status(401) // 401 Unauthorized
         .json({ message: "invalid_credentials" });
     }
 
+    // 2. 비밀번호 일치 여부 확인
     const isMatch = await comparePassword(password, user.password);
-
     if (!isMatch) {
       return res
         .status(401)
         .json({ message: "invalid_credentials" }); // "이메일 또는 비밀번호가 잘못되었습니다.
     }
 
-    const accessToken = generateAccessToken({ userId: user.id });
-    const refreshToken = generateRefreshToken({ userId: user.id });
 
-    res.cookie("refreshToken", refreshToken, {
-      httpOnly: true,
-      secure: isProd,
-      sameSite: isProd ? 'none' : 'lax',
-      domain:   isProd ? '.interview-town.com' : undefined,
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-    });
-
+    // 3. 토큰 생성 없이 유저 정보만 그대로 반환
+    // auth.js의 authorize 함수는 이 객체를 받아 세션을 생성
     return res.status(200).json({
-      accessToken,
-      user:{
-        id: user.id,
-        nickname:user.nickname,
-        email : user.email
-      }
+      id: user.id,
+      nickname:user.nickname,
+      email : user.email
     });
-  } catch (err) {
-    console.error("로그인 오류:", err);
+  } catch (error) {
+    console.error("로그인 오류:", error);
     res.status(500).json({ message: "server_error" });
   }
 };
